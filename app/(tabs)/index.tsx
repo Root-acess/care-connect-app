@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window"); // Add height to Dimensions
 
 export default function Index() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -31,6 +31,9 @@ export default function Index() {
     { source: require("../../assets/images/img4.jpg") },
   ];
 
+  // Calculate slider height as 25% of screen height
+  const sliderHeight = height * 0.25;
+
   useEffect(() => {
     const interval = setInterval(() => {
       const nextSlide = (currentSlide + 1) % sliderImages.length;
@@ -43,6 +46,26 @@ export default function Index() {
 
     return () => clearInterval(interval);
   }, [currentSlide]);
+
+  // Define dynamic styles inside the component for slider
+  const dynamicStyles = StyleSheet.create({
+    sliderContainer: {
+      height: sliderHeight,
+      marginBottom: 20,
+    },
+    slide: {
+      width: width,
+      height: sliderHeight,
+      borderRadius: 10,
+      overflow: "hidden",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    slideImage: {
+      width: width,
+      height: sliderHeight,
+    },
+  });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -57,7 +80,7 @@ export default function Index() {
           <Text style={styles.welcomeText}>Welcome, {userName}!</Text>
         </View>
 
-        <View style={styles.sliderContainer}>
+        <View style={dynamicStyles.sliderContainer}>
           <ScrollView
             ref={scrollRef}
             horizontal
@@ -70,11 +93,11 @@ export default function Index() {
             scrollEventThrottle={16}
           >
             {sliderImages.map((image, index) => (
-              <View key={index} style={styles.slide}>
+              <View key={index} style={dynamicStyles.slide}>
                 <Image
                   source={image.source}
-                  style={styles.slideImage}
-                  resizeMode="contain" // Changed from "cover" to "contain"
+                  style={dynamicStyles.slideImage}
+                  resizeMode="contain"
                 />
               </View>
             ))}
@@ -153,22 +176,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#007AFF",
     fontWeight: "600",
-  },
-  sliderContainer: {
-    height: 180,
-    marginBottom: 20,
-  },
-  slide: {
-    width: width,
-    height: 180,
-    borderRadius: 10,
-    overflow: "hidden",
-    justifyContent: "center", // Center image vertically
-    alignItems: "center", // Center image horizontally
-  },
-  slideImage: {
-    width: width, // Match container width
-    height: 180, // Match container height
   },
   indicatorContainer: {
     flexDirection: "row",
